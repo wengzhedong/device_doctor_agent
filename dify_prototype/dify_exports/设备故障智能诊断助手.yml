@@ -1,0 +1,278 @@
+app:
+  description: 判断出现什么故障并该如何应对
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  icon_type: emoji
+  mode: workflow
+  name: 设备故障智能诊断助手
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai_api_compatible:0.0.66@51801b51069b2578c3fcf6d38edc45c45efd8b7ef4fdb25f096bd84d4f95a53d
+    version: null
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/tongyi:0.2.18@7e2c5b34a841724e6abab916520da2af233a365dcd23feb11d427accc194a6e2
+    version: null
+kind: app
+version: 0.7.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 50
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        knowledge_file_size_limit: 15
+        single_chunk_attachment_limit: 10
+        skill_file_size_limit: 50
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: knowledge-retrieval
+      id: 1788784256279-source-1788786556425-target
+      source: '1788784256279'
+      sourceHandle: source
+      target: '1788786556425'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1788786556425-source-1788784520608-target
+      source: '1788786556425'
+      sourceHandle: source
+      target: '1788784520608'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: 1788784520608-source-1788785037924-target
+      source: '1788784520608'
+      sourceHandle: source
+      target: '1788785037924'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 用户输入
+        type: start
+        variables:
+        - default: ''
+          hint: ''
+          label: query
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: query
+      height: 134
+      id: '1788784256279'
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 303
+      zIndex: 0
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1788786556425'
+          - result
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: deepseek-v4-flash
+          provider: langgenius/openai_api_compatible/openai_api_compatible
+        prompt_template:
+        - id: 3ba0c3a0-8362-41ce-9bda-6e02d1b9214e
+          role: system
+          text: '你是一位拥有20年经验的CNC设备维护总工程师。
+
+
+            **【铁律】**
+
+            - 你**必须且只能**依据下方的“参考资料”来回答。
+
+            - 如果参考资料中没有答案，请直接回复“手册中未找到该故障码，请补充更多信息”。
+
+            - 严禁使用你自己预训练的知识来回答设备故障问题。
+
+
+            **【输出格式要求】**
+
+            请严格按照以下格式输出诊断建议：
+
+            [故障代码]
+
+            ...
+
+            [故障现象]
+
+            ...
+
+            [可能原因]
+
+            1. ...
+
+            2. ...
+
+            [处理建议]
+
+            1. ...
+
+            2. ...
+
+
+            **【参考资料】**
+
+            {{#context#}}
+
+            **【用户输入】**
+
+            {{#1788784256279.query#}}'
+        selected: false
+        title: LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 108
+      id: '1788784520608'
+      position:
+        x: 802.8513016450029
+        y: 282
+      positionAbsolute:
+        x: 802.8513016450029
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 302
+      zIndex: 0
+    - data:
+        outputs:
+        - value_selector:
+          - '1788784520608'
+          - text
+          value_type: string
+          variable: text
+        selected: false
+        title: 输出
+        type: end
+      height: 109
+      id: '1788785037924'
+      position:
+        x: 1196.0632094979142
+        y: 282
+      positionAbsolute:
+        x: 1196.0632094979142
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 302
+      zIndex: 0
+    - data:
+        dataset_ids:
+        - I+ACesIDwI8qOXK7IB7Ajj26xkPS7yPXofvfZN1IHAbxFMnM9XnHfcMrrFe4l3Hc
+        - cQ+qk25Ce4Too8PJ1CntHaC7Mx0+Vmx8/BgQAK5us37eigB9C7iy3aywXa2jKpB9
+        multiple_retrieval_config:
+          reranking_enable: true
+          reranking_mode: reranking_model
+          reranking_model:
+            model: qwen3-rerank
+            provider: langgenius/tongyi/tongyi
+          top_k: 4
+        query_attachment_selector: []
+        query_variable_selector:
+        - '1788784256279'
+        - query
+        retrieval_mode: multiple
+        selected: false
+        title: 知识检索
+        type: knowledge-retrieval
+      height: 111
+      id: '1788786556425'
+      position:
+        x: 443
+        y: 282
+      positionAbsolute:
+        x: 443
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 302
+      zIndex: 0
+    viewport:
+      x: 118.33106884416054
+      y: 224.96161927529954
+      zoom: 0.7578582832552002
+  rag_pipeline_variables: []
