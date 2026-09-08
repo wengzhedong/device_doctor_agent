@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from langchain_core.messages import HumanMessage
 from online.agent_core import agent
 
+
 # ============================================================================
 # 1. 创建 FastAPI 应用实例
 # ============================================================================
@@ -25,6 +26,7 @@ class QueryRequest(BaseModel):
     """用户请求的格式"""
     question: str                # 用户的问题，如 "故障E101怎么处理？"
     # 可以扩展其他字段，比如 user_id, session_id 等
+    system_prompt: str = None       # 可选的系统提示，覆盖默认的 SYSTEM_PROMPT
 
 class QueryResponse(BaseModel):
     """服务响应的格式"""
@@ -42,7 +44,8 @@ async def diagnose(request: QueryRequest):
     try:
         # 3.1 将用户问题包装成 HumanMessage，传给 Agent
         result = agent.invoke({
-            "messages": [HumanMessage(content=request.question)]
+            "messages": [HumanMessage(content=request.question)],
+            "system_prompt": request.system_prompt  # 如果用户提供了自定义的系统提示，就使用它
         })
         
         # 3.2 从 Agent 的返回结果中提取最终答案

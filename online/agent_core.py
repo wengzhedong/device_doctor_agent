@@ -57,7 +57,9 @@ def call_model(state: AgentState):
     """
     messages = state["messages"]
     # 把系统提示词插入到消息列表的最前面
-    full_messages = [SystemMessage(content=Config.SYSTEM_PROMPT)] + messages
+    system_prompt = state.get("system_prompt", Config.SYSTEM_PROMPT)
+    # 从state中获取 system_prompt，如果没有，就用默认的 Config.SYSTEM_PROMPT
+    full_messages = [SystemMessage(content=system_prompt)] + messages
     # 调用大模型（它已经知道可以用哪些工具了）
     response = model_with_tools.invoke(full_messages)
     # 把大模型的"思考结果"写回黑板（State）
